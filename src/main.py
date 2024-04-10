@@ -1,9 +1,11 @@
+"""run main models."""
+
+from pathlib import Path
 from zipfile import ZipFile
-from pathlib import Path 
 
-p = Path("fixtures/hourly_energy_demand_generation.zip")
+p = Path("data/raw/hourly_energy_demand_generation.zip")
 
-with ZipFile(p, 'r') as zipdata:
+with ZipFile(p, "r") as zipdata:
     for f in zipdata.filelist:
         if f.filename == "energy_dataset.csv":
             print("energy data")

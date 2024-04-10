@@ -6,9 +6,10 @@ authors = ["ryukyi <ryukyi@example.com>"]
 readme = "README.md"
 
 [tool.poetry.dependencies]
-python = "^3.11"
+python = "^3.12"
 python-dotenv = "^1.0.1"
 pandas = "^2.2.2"
+loguru = "^0.7.2"
 
 
 [tool.poetry.group.dev.dependencies]
@@ -16,7 +17,27 @@ ipython = "^8.23.0"
 mypy = "^1.9.0"
 black = "^24.3.0"
 ruff = "^0.3.5"
+pre-commit = "^3.7.0"
+bandit = "^1.7.8"
+pylint = "^3.1.0"
+pytest = "^8.1.1"
 
 [build-system]
 requires = ["poetry-core"]
 build-backend = "poetry.core.masonry.api"
+
+[tool.ruff.lint]
+# enforce additional rules
+extend-select = [
+    "UP", # pyupgrade
+    "D",  # pydocstyle
+    "I",  # isort
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.bandit]
+# assert statements are known vulnerabilities
+# all tests are ignored
+exclude_dirs = ["tests"]
