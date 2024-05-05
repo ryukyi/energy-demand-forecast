@@ -6,3 +6,5 @@
 
 # secret environment files
 .env
+
+.ipynb*

@@ -1,5 +1,7 @@
 """Decide what to do with the missing values."""
 
+"""Decide what to do with the missing values."""
+
 from pathlib import Path
 from zipfile import ZipFile
 
@@ -34,6 +36,8 @@ with ZipFile(p, "r") as zipdata:
             weather_df = pd.read_csv(zipdata.open(f.filename))
             logger.debug("Weather data loaded.")
 
+# Handle missing values by filling them with the mean
+energy_df.fillna(energy_df.mean(), inplace=True)
 
 # Cycle through each column
 for col in energy_df.columns:
@@ -42,7 +46,8 @@ for col in energy_df.columns:
         is_normal, result = is_normally_distributed(energy_df[col])
         logger.debug(f"Column '{col}' is normally distributed: {is_normal}. {result}")
         skew = skewness(energy_df[col])
-        logger.debug(f"Column '{col}'skew: {is_normal}. {result}")
+        logger.debug(f"Column '{col}' skew: {skew}")
         plot_histogram(energy_df[col])
+
 # logger.debug the DataFrame to see the result
-logger.debug(energy_df)
+# logger.debug(energy_df)

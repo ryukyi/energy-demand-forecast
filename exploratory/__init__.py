@@ -11,7 +11,7 @@ ROOT_PATH = Path(__file__).parents[1].absolute()
 EXPLORATORY_ROOT_PATH = ROOT_PATH / "exploratory"
 
 # default to INFO but expose so can be overrriden
-LOGLEVEL = os.getenv("LOGLEVEL", "DEBUG")
+LOGLEVEL = os.getenv("LOGLEVEL", "INFO")
 
 loguru_config = {
     "handlers": [
