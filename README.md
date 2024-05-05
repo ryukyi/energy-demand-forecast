@@ -26,6 +26,7 @@ This document outlines a structured approach to conducting A/B testing to explor
 
 ## 3. Data Preprocessing
 
+- **Clean Data:** Ensure empties are addressed and data is indexed
 - **Normalize Data:** Ensure both datasets are on a similar scale.
 - **Feature Engineering:** Create features from the weather data that might influence energy prices (e.g., average temperature, rainfall).
 

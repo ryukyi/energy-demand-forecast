@@ -3,18 +3,27 @@
 import os
 import sys
 from functools import wraps
+from pathlib import Path
 from time import perf_counter
+from zipfile import ZipFile
 
+import pandas as pd
 from dotenv import find_dotenv, load_dotenv
 from loguru import logger
 
 # Use local `".env" file vars or fail silently if it doesn't exist
 load_dotenv(dotenv_path=find_dotenv())
 
+# Project paths
+ROOT_PATH = Path(__file__).parents[1].absolute()
+EXPLORATORY_ROOT_PATH = ROOT_PATH / "exploratory"
+DATA_PATH = ROOT_PATH / "data"
+RAW_ENERGY_ZIP_DATA = DATA_PATH / "raw/hourly_energy_demand_generation.zip"
+
 # default to INFO but expose so can be overrriden
 LOGLEVEL = os.getenv("LOGLEVEL", "INFO")
 
-loguru_config = {
+LOGGER_CONFIG = {
     "handlers": [
         {
             "sink": sys.stdout,
@@ -33,7 +42,7 @@ loguru_config = {
 }
 
 # root logger with "enqueue=True" to capture async
-logger.configure(handlers=loguru_config["handlers"])
+logger.configure(handlers=LOGGER_CONFIG["handlers"])
 
 
 def timing(func):
@@ -58,3 +67,22 @@ def timing(func):
         return func_meta
 
     return wrap
+
+
+# Open the zip file
+with ZipFile(RAW_ENERGY_ZIP_DATA, "r") as zipdata:
+    # Iterate over the files in the zip file
+    for f in zipdata.filelist:
+        # Check if the file is the energy dataset
+        if f.filename == "energy_dataset.csv":
+            # Read the CSV file into a pandas DataFrame
+            df_energy = pd.read_csv(zipdata.open(f.filename), parse_dates=["time"])
+            logger.debug("Energy data loaded.")
+        # Check if the file is the weather features dataset
+        elif f.filename == "weather_features.csv":
+            # Read the CSV file into a pandas DataFrame
+            df_weather = pd.read_csv(zipdata.open(f.filename), parse_dates=["dt_iso"])
+            logger.debug("Weather data loaded.")
+
+# force time to be correctly parsed and typed
+df_energy["time"] = pd.to_datetime(df_energy["time"], utc=True)
